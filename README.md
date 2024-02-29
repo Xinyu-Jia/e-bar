@@ -3,7 +3,9 @@
 程序如有更改，恕不另行通知。
 
 （作者特别提醒：不要更改res文件夹里的任何内容！为使程序发挥功能，请设置开机自启。）
+
 一、环境配置
+
     1）python环境
         本程序基于python 3开发。在运行本程序时，请在python官网下载python 3.x（网址：https://www.python.org/downloads/）。
 
@@ -40,3 +42,5 @@
     您可以通过jiaxinyu1108@outlook.com联系TA。
 本程序免费开源，严禁用于商业用途。
 2024-2-28# e-bar
+///
+///
