@@ -1,28 +1,79 @@
 from tkinter import *
 from datetime import *
 from threading import *
-from tkinter import ttk, filedialog, colorchooser
-import time, os, sys, shutil
+from urllib import request
+from tkinter import ttk, filedialog, colorchooser, messagebox
+import time, os, sys, shutil, re
 
-global day, event, ft, fgg, bgg, fl
+global day, event, ft, fgg, bgg, fl, wea_inf, weat
 
-with open('res/disk0.txt') as a:
-    disk0 = a.read()
-with open('res/disk1.txt') as a:
-    disk1 = a.read()
-with open('res/disk2.txt') as a:
-    disk2 = a.read()
-with open('res/tit.txt') as a:
-    tit = a.read()
-with open('res/fgg.txt') as a:
-    fgg = a.read()
-with open('res/bgg.txt') as a:
-    bgg = a.read()
-with open('res/ft.txt') as a:
-    ft = a.read()
-with open('res/fl.txt') as a:
-    fl = int(a.read())
+xsm=40
 
+'''
+下面这段代码作者：@许书陌不会C，TA在不引入任何第三方库的前提下
+巧妙地实现了爬取当前天气信息，特别感谢！
+'''
+def wt(event):
+    global more
+    try:
+        req = request.Request('https://tianqi.2345.com/')
+        weekly_weather = request.urlopen(req).read().decode('utf-8')
+        tg = r'<span class="banner-whether-desc1">(.*)</span>'
+        tg1=r'<!-- <span class="banner-whether-desc2">(.*)</span> -->'
+        tg2=r'<div class="banner-right-con-list-temp">(.*)</div>'
+        tg3=r'data-ajax25="(.*)" data-ajax25module="首屏内容区" data-ajax25location="空气质量">'
+        tem=re.findall(tg, weekly_weather)
+        wea=re.findall(tg1, weekly_weather)
+        inf=wea[0]+' '+tem[0]
+        tem_ft=re.findall(tg2, weekly_weather)
+        air=re.findall(tg3,weekly_weather)
+        inf1=str(air[0])+'\n今天'+str(tem_ft[1])+'\n明天'+str(tem_ft[2])
+        l2.config(text=inf, font=('微软雅黑',22))
+        l8.config(text=inf1, font=('微软雅黑',14),anchor='n')
+        print(inf1)
+    except:
+        l2.config(text='获取天气信息失败！\n单击此处重试。', font=('微软雅黑',13))
+        l8.config(text= ' ', font=('微软雅黑',15))
+    
+'''
+这是这段代码的结尾
+'''
+
+try:
+    with open('res/weather.txt') as a:
+        weat = a.read()
+    with open('res/disk0.txt') as a:
+        disk0 = a.read()
+    with open('res/disk1.txt') as a:
+        disk1 = a.read()
+    with open('res/disk2.txt') as a:
+        disk2 = a.read()
+    with open('res/tit.txt') as a:
+        tit = a.read()
+    with open('res/fgg.txt') as a:
+        fgg = a.read()
+    with open('res/bgg.txt') as a:
+        bgg = a.read()
+    with open('res/ft.txt') as a:
+        ft = a.read()
+    with open('res/fl.txt') as a:
+        fl = int(a.read())
+    with open('res/djs.txt') as f:
+        day = (datetime.strptime(f.readlines()[1], '%Y-%m-%d') - datetime.now()).days
+    with open('res/djs.txt') as f:
+        event = f.readlines()[0]
+    z=len(str(day))
+    if z >= 5:
+        xsm=24
+except:
+    messagebox.showerror('错误','由于配置文件错误，电子班务栏无法启动。请重新解压res配置文件夹。')
+
+if weat=='1':
+        wea_st='打开天气'
+        wea_inf='0'
+else:
+    wea_st='关闭天气'
+    wea_inf='1'
 
 def readdjs():
     global day, event
@@ -31,14 +82,26 @@ def readdjs():
     with open('res/djs.txt') as f:
         event = f.readlines()[0]
     l3.config(text=str(day + 1) + '天')
+    z=len(str(day + 1))
+    if z >= 5:
+        xsm=25
+    else:
+        xsm=40
+        
     l3_.config(text='距离' + event + '还有')
+    l3.config(font=('微软雅黑', xsm))
 
 
 def scan():
     while True:
+        wt(None)
+        time.sleep(1200)
+
+def scan_t():
+    l8.config(text= '又是元气满满\n的一天呢！', font=('微软雅黑',15))
+    while True:
         l2.config(text=datetime.now().strftime('%H:%M'))
         time.sleep(1)
-
 
 def animation():
     n = 0
@@ -87,13 +150,6 @@ def show(event):
     x.bind('<Button-1>', clss)
     a.pack()
     w.mainloop()
-
-
-with open('res/djs.txt') as f:
-    day = (datetime.strptime(f.readlines()[1], '%Y-%m-%d') - datetime.now()).days
-with open('res/djs.txt') as f:
-    event = f.readlines()[0]
-
 
 def djss(event):
     w = Tk()
@@ -191,17 +247,6 @@ def dev(event):
     def re(event):
         w.destroy()
 
-    def rs():
-        sb.config(bg='#E8F9FF', fg='#0078D7')
-        ll1.config(fg='#0078D7')
-        a = open('res/bgg.txt', 'w')
-        a.write('#0078D7')
-        a.close()
-        b = open('res/fgg.txt', 'w')
-        b.write('#E8F9FF')
-        b.close()
-        rest()
-
     def cgtt():
         title.config(text=bte.get())
         c = open('res/tit.txt', 'w')
@@ -249,7 +294,7 @@ def dev(event):
         else:
             f = os.path.exists(i + '/bgg.txt')
             g = os.path.exists(i + '/egg.gif')
-            h = os.path.exists(i + '/ft.txt')
+            h = os.path.exists(i + '/weather.txt')
             if not f or not g or not h:
                 z = Label(w, text='无效的配置文件夹。')
                 z.pack()
@@ -331,13 +376,21 @@ def dev(event):
         python = sys.executable
         os.execl(python, python, *sys.argv)
 
+    def cgwe():
+        global wea_inf, weat
+        print(wea_inf)
+        a = open('res/weather.txt', 'w')
+        a.write(wea_inf)
+        weat=wea_inf
+        a.close()
+        rest()
+
     w = Tk()
     w.overrideredirect(True)
     w.wm_attributes('-topmost', 1)
     w.geometry('%dx%d+%d+%d' % (500, 420, win.winfo_screenwidth() - 520, win.winfo_screenheight() - 480))
     ll1 = Label(w, text='设置', fg=bgg, font=(ft, fl, 'bold'))
     cb = Button(w, text='修改课表', command=lambda: cg(0))
-    b7 = Button(w, text='恢复默认颜色', command=rs)
     sb = Button(w, fg=bgg, bg=fgg, text='修改倒计时', command=lambda:djss(1))
     bt = Label(w, text='修改标题')
     op = Button(w, text='导出设置', command=opt)
@@ -346,6 +399,7 @@ def dev(event):
     b33 = Button(w, text='选取背景颜色', command=choosef)
     b5 = Button(w, text='重启程序', fg='red', command=rest)
     bdl = Label(w, text='可能的U盘盘符')
+    bwe=Button(w, text=wea_st, command=cgwe)
     bd1 = Entry(w, width=5)
     bd2 = Entry(w, width=5)
     bd3 = Entry(w, width=5)
@@ -378,7 +432,6 @@ def dev(event):
     btb.place(x=350, y=45)
     b22.place(x=100, y=95)
     b33.place(x=300, y=95)
-    b7.place(x=230, y=185)
     sb.place(x=340, y=185)
     bdl.place(x=200, y=130)
     bdl1.place(x=100, y=150, width=40)
@@ -388,11 +441,12 @@ def dev(event):
     hp.place(x=60, y=360)
     hp1.place(x=200, y=320)
     op.place(x=170, y=240)
-    cb.place(x=80, y=240)
+    cb.place(x=240, y=185)
     ip.place(x=250, y=240)
     hp1.bind('<Button-1>', helpme)
     b5.place(x=330, y=240)
     b66.place(x=120, y=185)
+    bwe.place(x=90, y=240)
     w.mainloop()
 
 
@@ -409,13 +463,13 @@ title = Label(win, text=tit, fg=bgg, bg=fgg, font=(ft, fl, 'bold'))
 l1 = Label(win, text='--', bg=bgg, fg=fgg, font=('微软雅黑', 23), wraplength=250)
 l1_ = Label(win, text='今日课程', bg=bgg, fg=fgg, font=('隶书', 15))
 l2 = Label(win, text='--', bg=bgg, fg=fgg, font=('微软雅黑', 30))
-l3 = Label(win, text=str(day + 1) + '天', bg=bgg, fg=fgg, font=('微软雅黑', 40))
+l3 = Label(win, text=str(day + 1) + '天', bg=bgg, fg=fgg, font=('微软雅黑', xsm))
 l3_ = Label(win, text='距离' + event + '还有', bg=bgg, fg=fgg, font=('隶书', 15))
 l4 = Label(win, text=datetime.now().strftime('%m-%d'), bg=bgg, fg=fgg, font=('微软雅黑', 30))
 l4_ = Label(win, text='--', bg=bgg, fg=fgg, font=('隶书', 18))
 l6 = Button(win, text='打开U盘', bg=fgg, fg=bgg, font=('微软雅黑', 25), command=lambda: open_U())
-l7 = Label(win, bg=fgg, fg=bgg, text='Version 2.5')
-st = Label(win, fg=fgg, bg=bgg, text='设置', font=('微软雅黑', 25, 'bold'))
+l7 = Label(win, bg=fgg, fg=bgg, text='Version 2.6 | 设置')
+l8=Label(win,bg=bgg,fg=fgg,text='')
 
 if a == 'Mon':
     cls(0, '星期一')
@@ -433,7 +487,6 @@ if a == 'Sun':
     cls(6, '星期日')
 
 title.place(width=500, height=60, x=0, y=10)
-st.place(width=150, height=70, x=20, y=160)
 l2.place(width=150, height=75, x=20, y=80)
 l1_.place(width=150, height=20, x=245, y=100)
 l1.place(width=305, height=150, x=175, y=80)
@@ -442,10 +495,16 @@ l3_.place(width=148, height=40, x=175, y=250)
 l4.place(width=150, height=150, x=20, y=235)
 l4_.place(width=65, height=20, x=65, y=250)
 l6.place(width=150, height=150, x=330, y=235)
-l7.place(width=100, height=30, x=210, y=388)
+l7.place(width=150, height=30, x=175, y=388)
+l8.place(width=150, height=96, x=20, y=134)
 
 c = Thread(target=scan)
-c.start()
+c2 = Thread(target=scan_t)
+if weat == '1':
+    c2.start()
+else:
+    c.start()
+    l2.bind('<Button-1>', wt)
 c1 = Thread(target=animation)
 c1.start()
 
@@ -454,6 +513,6 @@ l7.bind('<Button-3>', show)
 l1.bind('<Button-3>', cg)
 l3.bind('<Button-3>', djss)
 l3_.bind('<Button-3>', djss)
-st.bind('<Button-1>', dev)
+l7.bind('<Button-1>', dev)
 
 win.mainloop()
