@@ -6,29 +6,29 @@ import time, os, sys, shutil
 
 global day, event, ft, fgg, bgg, fl
 
-with open('res/disk0.txt') as a:
+with open('src/disk0.txt') as a:
     disk0 = a.read()
-with open('res/disk1.txt') as a:
+with open('src/disk1.txt') as a:
     disk1 = a.read()
-with open('res/disk2.txt') as a:
+with open('src/disk2.txt') as a:
     disk2 = a.read()
-with open('res/tit.txt') as a:
+with open('src/tit.txt') as a:
     tit = a.read()
-with open('res/fgg.txt') as a:
+with open('src/fgg.txt') as a:
     fgg = a.read()
-with open('res/bgg.txt') as a:
+with open('src/bgg.txt') as a:
     bgg = a.read()
-with open('res/ft.txt') as a:
+with open('src/ft.txt') as a:
     ft = a.read()
-with open('res/fl.txt') as a:
+with open('src/fl.txt') as a:
     fl = int(a.read())
 
 
 def readdjs():
     global day, event
-    with open('res/djs.txt') as f:
+    with open('src/djs.txt') as f:
         day = (datetime.strptime(f.readlines()[1], '%Y-%m-%d') - datetime.now()).days
-    with open('res/djs.txt') as f:
+    with open('src/djs.txt') as f:
         event = f.readlines()[0]
     l3.config(text=str(day + 1) + '天')
     l3_.config(text='距离' + event + '还有')
@@ -65,7 +65,7 @@ def ext(event):
 
 
 def cls(line, cn):
-    with open('res/kcb.txt') as f:
+    with open('src/kcb.txt') as f:
         c = f.readlines()[line]
         l1.config(text='\n' + c)
         l4_.config(text=cn)
@@ -80,7 +80,7 @@ def show(event):
 
     w.overrideredirect(True)
     w.geometry('%dx%d+%d+%d' % (500, 420, win.winfo_screenwidth() - 520, win.winfo_screenheight() - 480))
-    img = PhotoImage(file='res/egg.gif')
+    img = PhotoImage(file='src/egg.gif')
     a = Label(w, image=img)
     x = Label(w, text='x', bg='red', fg='white')
     x.place(width=20, height=30, x=480, y=0)
@@ -89,9 +89,9 @@ def show(event):
     w.mainloop()
 
 
-with open('res/djs.txt') as f:
+with open('src/djs.txt') as f:
     day = (datetime.strptime(f.readlines()[1], '%Y-%m-%d') - datetime.now()).days
-with open('res/djs.txt') as f:
+with open('src/djs.txt') as f:
     event = f.readlines()[0]
 
 
@@ -114,7 +114,7 @@ def djss(event):
             a.pack()
             return
         
-        f = open('res/djs.txt', 'w')
+        f = open('src/djs.txt', 'w')
         f.write(e11 + '\n' + e22)
         f.close()
         readdjs()
@@ -153,10 +153,10 @@ def ftft():
         ft = b1.get()
         t.config(font=(ft, fl, 'bold'))
         title.config(font=(ft, fl, 'bold'))
-        f = open('res/ft.txt', 'w')
+        f = open('src/ft.txt', 'w')
         f.write(ft)
         f.close()
-        g = open('res/fl.txt', 'w')
+        g = open('src/fl.txt', 'w')
         g.write(str(fl))
         g.close()
 
@@ -184,7 +184,7 @@ def ftft():
 
 
 def cg(event):
-    os.startfile('res\kcb.txt')
+    os.startfile('src\kcb.txt')
 
 
 def dev(event):
@@ -194,17 +194,17 @@ def dev(event):
     def rs():
         sb.config(bg='#E8F9FF', fg='#0078D7')
         ll1.config(fg='#0078D7')
-        a = open('res/bgg.txt', 'w')
+        a = open('src/bgg.txt', 'w')
         a.write('#0078D7')
         a.close()
-        b = open('res/fgg.txt', 'w')
+        b = open('src/fgg.txt', 'w')
         b.write('#E8F9FF')
         b.close()
         rest()
 
     def cgtt():
         title.config(text=bte.get())
-        c = open('res/tit.txt', 'w')
+        c = open('src/tit.txt', 'w')
         c.write(bte.get())
         c.close()
         tit = bte.get()
@@ -213,21 +213,21 @@ def dev(event):
 
     def disk_0():
         global disk0
-        c = open('res/disk0.txt', 'w')
+        c = open('src/disk0.txt', 'w')
         c.write(bdl1.get())
         c.close()
         disk0 = bdl1.get()
 
     def disk_1():
         global disk1
-        c = open('res/disk1.txt', 'w')
+        c = open('src/disk1.txt', 'w')
         c.write(bdl2.get())
         c.close()
         disk1 = bdl2.get()
 
     def disk_2():
         global disk2
-        c = open('res/disk2.txt', 'w')
+        c = open('src/disk2.txt', 'w')
         c.write(bdl3.get())
         c.close()
         disk2 = bdl3.get()
@@ -254,14 +254,14 @@ def dev(event):
                 z = Label(w, text='无效的配置文件夹。')
                 z.pack()
             else:
-                shutil.rmtree('res')
-                shutil.copytree(i, './res')
+                shutil.rmtree('src')
+                shutil.copytree(i, './src')
                 rest()
         w.wm_attributes('-topmost', 1)
 
     def opt():
         o = 'settings/' + datetime.now().strftime('%y_%m_%d_%H_%M_%S')
-        shutil.copytree('res/', o)
+        shutil.copytree('src/', o)
         z = Label(w, text='导出为' + o)
         z.pack()
         w.wm_attributes('-topmost', 1)
@@ -274,7 +274,7 @@ def dev(event):
             w.wm_attributes('-topmost', 1)
             pass
         else:
-            a = open('res/bgg.txt', 'w')
+            a = open('src/bgg.txt', 'w')
             a.write(str(cl[1]))
             a.close()
             w.wm_attributes('-topmost', 1)
@@ -319,7 +319,7 @@ def dev(event):
             l6.config(bg=b)
             st.config(fg=b)
             l7.config(bg=b)
-            a = open('res/fgg.txt', 'w')
+            a = open('src/fgg.txt', 'w')
             a.write(str(cl[1]))
             a.close()
             w.wm_attributes('-topmost', 1)
