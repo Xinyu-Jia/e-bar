@@ -2,7 +2,8 @@ from tkinter import *
 from datetime import *
 from threading import *
 from tkinter import ttk, filedialog, colorchooser
-import time, os, sys, shutil
+from urllib import request
+import time, os, sys, shutil,re
 
 global day, event, ft, fgg, bgg, fl
 
